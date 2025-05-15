@@ -1,18 +1,21 @@
-name: Docker Image CI
+name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - main
 
 jobs:
-
-  build:
-
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag my-image-name:$(date +%s)
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: build image
+        run: docker build ./api/-t parsuvanath/projerc22:latest
+      - name: push image to docker hub 
+        run: 
+          docker login -u PARSUVANATH -p ${{secrets.DOCKER_USER_NAME}}
+          docker push parsuvanath/projerc22:latest
